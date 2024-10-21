@@ -1,10 +1,7 @@
 #ifndef __RIJNDAEL_H__
 #define __RIJNDAEL_H__
 
-#include <exception>
-#include <stdexcept>
 #include <cstring>
-#include <string>
 
 using namespace std;
 
@@ -75,8 +72,6 @@ private:
 	//Auxiliary Function
 	void Xor(char* buff, char const* chain)
 	{
-		if (false == m_bKeyInit)
-			throw runtime_error(sm_szErrorMsg1);
 		for (int i = 0; i<m_blockSize; i++)
 			*(buff++) ^= *(chain++);
 	}
@@ -111,24 +106,18 @@ public:
 	//Get Key Length
 	int GetKeyLength()
 	{
-		if (false == m_bKeyInit)
-			throw runtime_error(sm_szErrorMsg1);
 		return m_keylength;
 	}
 
 	//Block Size
 	int	GetBlockSize()
 	{
-		if (false == m_bKeyInit)
-			throw runtime_error(sm_szErrorMsg1);
 		return m_blockSize;
 	}
 
 	//Number of Rounds
 	int GetRounds()
 	{
-		if (false == m_bKeyInit)
-			throw runtime_error(sm_szErrorMsg1);
 		return m_iROUNDS;
 	}
 
@@ -160,9 +149,6 @@ private:
 	static const int sm_U4[256];
 	static const signed char sm_rcon[30];
 	static const int sm_shifts[3][4][2];
-	//Error Messages
-	static char const* sm_szErrorMsg1;
-	static char const* sm_szErrorMsg2;
 	//Key Initialization Flag
 	bool m_bKeyInit;
 	//Encryption (m_Ke) round key

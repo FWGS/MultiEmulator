@@ -1,5 +1,5 @@
 #include "RevSpoofer.h"
-#include <string.h>
+#include <cstring>
 
 #define astrlen(x) sizeof(x) - 1
 
