@@ -1,12 +1,11 @@
-#pragma once
-
+#include "multi_emulator.h"
 int GenerateSteamEmu(void *pDest, int nSteamID)
 {
 	auto pTicket = (int *)pDest;
 
 	pTicket[20] = -1;        // +80, dproto/reunion wants this value to be -1, but if this value
 	                         //      does not match -1, then instead of SteamID in [21] cell
-	                         //      client IP address that xored with 0x25730981 number should 
+	                         //      client IP address that xored with 0x25730981 number should
 	                         //      be used. But dproto/reunion will just skip ticket validation
 	                         //      in that case.
 

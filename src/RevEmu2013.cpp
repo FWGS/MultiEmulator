@@ -1,10 +1,8 @@
-#pragma once
-
-#include "..\Public\StrUtils.h"
-#include "..\Public\RevSpoofer.h"
-#include "..\Public\Encryption\CRijndael.h"
-#include "..\Public\Encryption\SHA.h"
-#include <Windows.h>
+#include "multi_emulator.h"
+#include "StrUtils.h"
+#include "RevSpoofer.h"
+#include "CRijndael.h"
+#include "SHA.h"
 #include <time.h>
 
 int GenerateRevEmu2013(void *pDest, int nSteamID)
@@ -22,13 +20,13 @@ int GenerateRevEmu2013(void *pDest, int nSteamID)
 
 	pTicket[0] = 'S';                      // +0
 	pTicket[1] = revHash;                  // +4
-	pTicket[2] = 'rev';                    // +8
+	pTicket[2] = 'r' << 16 | 'e' << 8 | 'v';;// +8
 	pTicket[3] = 0;                        // +12
 	pTicket[4] = revHash << 1;             // +16
 	pTicket[5] = 0x01100001;               // +20
-	pTicket[6] = (int)_time64(0) + 90123;  // +24
+	pTicket[6] = (int)time(0) + 90123;  // +24
 	pbTicket[27] = ~(pbTicket[27] + pbTicket[24]);
-	pTicket[7] = ~(int)_time64(0);         // +28
+	pTicket[7] = ~(int)time(0);         // +28
 	pTicket[8] = revHash * 2 >> 3;         // +32
 	pTicket[9] = 0;                        // +36
 

@@ -1,7 +1,7 @@
-#pragma once
+#include "multi_emulator.h"
 
 /* bUniverse param is "y" value in "STEAM_x:y:z" */
-int GenerateAVSMP(void *pDest, int nSteamID, bool bUniverse = true)
+int GenerateAVSMP(void *pDest, int nSteamID, int bUniverse)
 {
 	auto pTicket = (int *)pDest;
 

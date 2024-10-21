@@ -1,10 +1,8 @@
-#pragma once
-
-#include "..\Public\StrUtils.h"
-#include "..\Public\RevSpoofer.h"
-#include "..\Public\Encryption\CRijndael.h"
-#include "..\Public\Encryption\SHA.h"
-#include <Windows.h>
+#include "multi_emulator.h"
+#include "StrUtils.h"
+#include "RevSpoofer.h"
+#include "CRijndael.h"
+#include "SHA.h"
 
 int GenerateSC2009(void* pDest, int nSteamID)
 {
@@ -15,13 +13,13 @@ int GenerateSC2009(void* pDest, int nSteamID)
 		return 0;
 
 	auto pTicket = (int*)pDest;
-	auto pbTicket = (byte*)pDest;
+	auto pbTicket = (unsigned char*)pDest;
 
 	auto revHash = RevSpoofer::Hash(hwid);
 
 	pTicket[0] = 'S';          // +0
 	pTicket[1] = revHash;      // +4
-	pTicket[2] = 'rev';        // +8
+	pTicket[2] = 'r' << 16 | 'e' << 8 | 'v';;// +8
 	pTicket[3] = 0;            // +12
 	pTicket[4] = revHash << 1; // +16
 	pTicket[5] = 0x01100001;   // +20

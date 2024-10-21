@@ -1,7 +1,7 @@
-#include <Windows.h>
 #include "RevSpoofer.h"
+#include <string.h>
 
-#define astrlen(x) _countof(x) - 1
+#define astrlen(x) sizeof(x) - 1
 
 static char s_szDictionary[] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
 

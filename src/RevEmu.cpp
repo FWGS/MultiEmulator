@@ -1,8 +1,6 @@
-#pragma once
-
-#include "..\Public\StrUtils.h"
-#include "..\Public\RevSpoofer.h"
-#include <Windows.h>
+#include "multi_emulator.h"
+#include "StrUtils.h"
+#include "RevSpoofer.h"
 
 int GenerateRevEmu(void *pDest, int nSteamID)
 {
@@ -17,7 +15,7 @@ int GenerateRevEmu(void *pDest, int nSteamID)
 
 	pTicket[0] = 'J';           //  +0, header
 	pTicket[1] = revHash;       //  +4, hash of string at +24 offset
-	pTicket[2] = 'rev';         //  +8, magic number
+	pTicket[2] = 'r' << 16 | 'e' << 8 | 'v';//  +8, magic number
 	pTicket[3] = 0;             // +12, unknown number, must always be 0
 
 	pTicket[4] = revHash << 1;  // +16, SteamId, Low part

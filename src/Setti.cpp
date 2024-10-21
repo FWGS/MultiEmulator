@@ -1,4 +1,4 @@
-#pragma once
+#include "multi_emulator.h"
 
 int GenerateSetti(void *pDest)
 {

@@ -1,5 +1,5 @@
-#include <Public\StrUtils.h>
-#include <Windows.h>
+#include "StrUtils.h"
+#include <stdlib.h>
 
 void CreateRandomString(char *pszDest, int nLength)
 {
