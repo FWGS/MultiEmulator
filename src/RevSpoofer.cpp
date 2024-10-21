@@ -8,7 +8,7 @@ static char s_szDictionary[] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
 static int iInputLen;
 static unsigned int uTreasure;
 
-bool ScanLast3(char *pszInput, unsigned int uPrevHash)
+static bool ScanLast3(char *pszInput, unsigned int uPrevHash)
 {
 	unsigned int h1, h2, h3, hh;
 	for (int i1 = 0; i1 < astrlen(s_szDictionary); i1++)
@@ -43,7 +43,7 @@ bool ScanLast3(char *pszInput, unsigned int uPrevHash)
 	return false;
 }
 
-bool ScanNext(char* pszInput, int uIndex, unsigned int uPrevHash)
+static bool ScanNext(char* pszInput, int uIndex, unsigned int uPrevHash)
 {
 	bool res;
 

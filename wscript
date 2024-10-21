@@ -22,3 +22,17 @@ def build(bld):
 		export_includes = ['include/'],
 		subsystem = bld.env.MSVC_SUBSYSTEM
 	)
+
+	if bld.env.TESTS:
+		tests = {
+			'sha256': 'tests/test_sha256.cpp',
+		}
+
+		for i in tests:
+			bld.program(features = 'test',
+				source = tests[i],
+				target = 'test_%s' % i,
+				includes = 'src/',
+				use = 'MultiEmulator',
+				subsystem = bld.env.CONSOLE_SUBSYSTEM,
+				install_path = None)
