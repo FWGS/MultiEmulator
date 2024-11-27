@@ -18,8 +18,7 @@ def build(bld):
 		source   = bld.path.ant_glob(['src/*.cpp']),
 		target   = 'MultiEmulator',
 		includes = ['include/', 'src/'],
-		export_includes = ['include/'],
-		subsystem = bld.env.MSVC_SUBSYSTEM
+		export_includes = ['include/']
 	)
 
 	if bld.env.TESTS:
@@ -33,5 +32,4 @@ def build(bld):
 				target = 'test_%s' % i,
 				includes = 'src/',
 				use = 'MultiEmulator',
-				subsystem = bld.env.CONSOLE_SUBSYSTEM,
 				install_path = None)
