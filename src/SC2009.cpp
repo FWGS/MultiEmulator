@@ -1,14 +1,14 @@
 #include "multi_emulator.h"
-#include "StrUtils.h"
 #include "RevSpoofer.h"
 #include "CRijndael.h"
 #include "SHA.h"
 
-int GenerateSC2009(void* pDest, int nSteamID)
+int GenerateSC2009(void* pDest, const char *szXashID, int nSteamID)
 {
 	char hwid[64];
 
-	CreateRandomString(hwid, 32);
+	strncpy(hwid, szXashID, 32);
+	hwid[32] = 0;
 	if (!RevSpoofer::Spoof(hwid, nSteamID))
 		return 0;
 

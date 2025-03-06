@@ -22,11 +22,11 @@ extern "C"
 {
 #endif
 
-int ME_EXPORT GenerateRevEmu2013( void *pDest, int nSteamID );
-int ME_EXPORT GenerateSC2009( void *pDest, int nSteamID );
+int ME_EXPORT GenerateRevEmu2013( void *pDest, const char *szXashID, int nSteamID );
+int ME_EXPORT GenerateSC2009( void *pDest, const char *szXashID, int nSteamID );
 int ME_EXPORT GenerateOldRevEmu( void *pDest, int nSteamID );
 int ME_EXPORT GenerateSteamEmu( void *pDest, int nSteamID );
-int ME_EXPORT GenerateRevEmu( void *pDest, int nSteamID );
+int ME_EXPORT GenerateRevEmu( void *pDest, const char *szXashID, int nSteamID );
 int ME_EXPORT GenerateSetti( void *pDest );
 int ME_EXPORT GenerateAVSMP( void *pDest, int nSteamID, int bUniverse );
 

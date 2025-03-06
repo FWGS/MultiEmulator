@@ -1,15 +1,15 @@
 #include "multi_emulator.h"
-#include "StrUtils.h"
 #include "RevSpoofer.h"
 #include "CRijndael.h"
 #include "SHA.h"
 #include <time.h>
 
-int GenerateRevEmu2013(void *pDest, int nSteamID)
+int GenerateRevEmu2013(void *pDest, const char *szXashID, int nSteamID)
 {
 	char szhwid[64];
 
-	CreateRandomString(szhwid, 32);
+	strncpy(szhwid, szXashID, 32);
+	szhwid[32] = 0;
 	if (!RevSpoofer::Spoof(szhwid, nSteamID))
 		return 0;
 
