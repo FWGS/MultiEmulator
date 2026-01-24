@@ -7,11 +7,11 @@ int GenerateRevEmu(void *pDest, const char *szXashID, int nSteamID)
 
 	strncpy(szhwid, szXashID, 16);
 	szhwid[16] = 0;
-	if (!RevSpoofer::Spoof(szhwid, nSteamID))
+	if (!RevSpoofer_Spoof(szhwid, nSteamID))
 		return 0;
 
-	auto pTicket = (int *)pDest;
-	auto revHash = RevSpoofer::Hash(szhwid);
+	int *pTicket = (int *)pDest;
+	unsigned int revHash = RevSpoofer_Hash(szhwid);
 
 	pTicket[0] = 'J';           //  +0, header
 	pTicket[1] = revHash;       //  +4, hash of string at +24 offset

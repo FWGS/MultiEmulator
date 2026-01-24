@@ -10,13 +10,13 @@ int GenerateRevEmu2013(void *pDest, const char *szXashID, int nSteamID)
 
 	strncpy(szhwid, szXashID, 32);
 	szhwid[32] = 0;
-	if (!RevSpoofer::Spoof(szhwid, nSteamID))
+	if (!RevSpoofer_Spoof(szhwid, nSteamID))
 		return 0;
 
-	auto pTicket = (int *)pDest;
-	auto pbTicket = (unsigned char *)pDest;
+	int *pTicket = (int *)pDest;
+	unsigned char *pbTicket = (unsigned char *)pDest;
 
-	auto revHash = RevSpoofer::Hash(szhwid);
+	unsigned int revHash = RevSpoofer_Hash(szhwid);
 
 	pTicket[0] = 'S';                      // +0
 	pTicket[1] = revHash;                  // +4
@@ -33,22 +33,25 @@ int GenerateRevEmu2013(void *pDest, const char *szXashID, int nSteamID)
 	static const char c_szAESKeyRand[] = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
 	char szAESHashRand[32];
-	auto AESRand = CRijndael();
-	AESRand.MakeKey(c_szAESKeyRand, CRijndael::sm_chain0, 32, 32);
-	AESRand.EncryptBlock(szhwid, szAESHashRand);
+	CRijndael AESRand;
+	CRijndael_Init( &AESRand );
+	CRijndael_MakeKey(&AESRand, c_szAESKeyRand, sm_chain0, 32, 32);
+	CRijndael_EncryptBlock(&AESRand, szhwid, szAESHashRand);
 	memcpy(&pbTicket[40], szAESHashRand, 32);
 
 	static const char c_szAESKeyRev[] = "_YOU_SERIOUSLY_NEED_TO_GET_LAID_";
 	char AESHashRev[32];
-	auto AESRev = CRijndael();
-	AESRev.MakeKey(c_szAESKeyRev, CRijndael::sm_chain0, 32, 32);
-	AESRev.EncryptBlock(c_szAESKeyRand, AESHashRev);
+	CRijndael AESRev;
+	CRijndael_Init( &AESRev );
+	CRijndael_MakeKey( &AESRev, c_szAESKeyRev, sm_chain0, 32, 32);
+	CRijndael_EncryptBlock(&AESRev, c_szAESKeyRand, AESHashRev);
 	memcpy(&pbTicket[72], AESHashRev, 32);
 
 	char szSHAHash[32];
-	auto sha = CSHA(CSHA::SHA256);
-	sha.AddData(szhwid, 32);
-	sha.FinalDigest(szSHAHash);
+	CSHA sha;
+	CSHA_Reset( &sha );
+	CSHA_AddData( &sha, szhwid, 32);
+	CSHA_FinalDigest( &sha, szSHAHash);
 	memcpy(&pbTicket[104], szSHAHash, 32);
 
 	return 194;

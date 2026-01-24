@@ -1,8 +1,7 @@
-#include <cstring>
-#include <cassert>
+#include <assert.h>
 #include "CRijndael.h"
 
-const int CRijndael::sm_alog[256] =
+static const int sm_alog[256] =
 {
 	1, 3, 5, 15, 17, 51, 85, 255, 26, 46, 114, 150, 161, 248, 19, 53,
 	95, 225, 56, 72, 216, 115, 149, 164, 247, 2, 6, 10, 30, 34, 102, 170,
@@ -22,7 +21,7 @@ const int CRijndael::sm_alog[256] =
 	57, 75, 221, 124, 132, 151, 162, 253, 28, 36, 108, 180, 199, 82, 246, 1
 };
 
-const int CRijndael::sm_log[256] =
+static const int sm_log[256] =
 {
 	0, 0, 25, 1, 50, 2, 26, 198, 75, 199, 27, 104, 51, 238, 223, 3,
 	100, 4, 224, 14, 52, 141, 129, 239, 76, 113, 8, 200, 248, 105, 28, 193,
@@ -42,7 +41,7 @@ const int CRijndael::sm_log[256] =
 	103, 74, 237, 222, 197, 49, 254, 24, 13, 99, 140, 128, 192, 247, 112, 7
 };
 
-const signed char CRijndael::sm_S[256] =
+static const signed char sm_S[256] =
 {
 	99, 124, 119, 123, -14, 107, 111, -59, 48, 1, 103, 43, -2, -41, -85, 118,
 	-54, -126, -55, 125, -6, 89, 71, -16, -83, -44, -94, -81, -100, -92, 114, -64,
@@ -62,7 +61,7 @@ const signed char CRijndael::sm_S[256] =
 	-116, -95, -119, 13, -65, -26, 66, 104, 65, -103, 45, 15, -80, 84, -69, 22
 };
 
-const signed char CRijndael::sm_Si[256] =
+static const signed char sm_Si[256] =
 {
 	82, 9, 106, -43, 48, 54, -91, 56, -65, 64, -93, -98, -127, -13, -41, -5,
 	124, -29, 57, -126, -101, 47, -1, -121, 52, -114, 67, 68, -60, -34, -23, -53,
@@ -82,7 +81,7 @@ const signed char CRijndael::sm_Si[256] =
 	23, 43, 4, 126, -70, 119, -42, 38, -31, 105, 20, 99, 85, 33, 12, 125
 };
 
-const int CRijndael::sm_T1[256] =
+static const int sm_T1[256] =
 {
 	-966564955, -126059388, -294160487, -159679603,
 	-855539, -697603139, -563122255, -1849309868,
@@ -150,7 +149,7 @@ const int CRijndael::sm_T1[256] =
 	2075177163, -1470868228, 1841019862, 739644986
 };
 
-const int CRijndael::sm_T2[256] =
+static const int sm_T2[256] =
 {
 	-1513725085, -2064089988, -1712425097, -1913226373,
 	234877682, -1110021269, -1310822545, 1418839493,
@@ -218,7 +217,7 @@ const int CRijndael::sm_T2[256] =
 	-881086288, -56077228, -697451589, 975967766
 };
 
-const int CRijndael::sm_T3[256] =
+static const int sm_T3[256] =
 {
 	1671808611, 2089089148, 2006576759, 2072901243,
 	-233963534, 1807603307, 1873927791, -984313403,
@@ -286,7 +285,7 @@ const int CRijndael::sm_T3[256] =
 	-1328841808, 1425844308, -1143575109, 372911126
 };
 
-const int CRijndael::sm_T4[256] =
+static const int sm_T4[256] =
 {
 	1667474886, 2088535288, 2004326894, 2071694838,
 	-219017729, 1802223062, 1869591006, -976923503,
@@ -354,7 +353,7 @@ const int CRijndael::sm_T4[256] =
 	-1330590853, 1414855848, -1145317779, 370555436
 };
 
-const int CRijndael::sm_T5[256] =
+static const int sm_T5[256] =
 {
 	1374988112, 2118214995, 437757123, 975658646,
 	1001089995, 530400753, -1392879445, 1273168787,
@@ -422,7 +421,7 @@ const int CRijndael::sm_T5[256] =
 	2076935265, -718096784, 1215061108, -793225406
 };
 
-const int CRijndael::sm_T6[256] =
+static const int sm_T6[256] =
 {
 	1347548327, 1400783205, -1021700188, -1774573730,
 	-885281941, -249586363, -1414727080, -1823743229,
@@ -490,7 +489,7 @@ const int CRijndael::sm_T6[256] =
 	1635502980, 1893020342, 1950903388, 1120974935
 };
 
-const int CRijndael::sm_T7[256] =
+static const int sm_T7[256] =
 {
 	-1487908364, 1699970625, -1530717673, 1586903591,
 	1808481195, 1173430173, 1487645946, 59984867,
@@ -558,7 +557,7 @@ const int CRijndael::sm_T7[256] =
 	-2073986101, -1234119374, 1551124588, 1463996600
 };
 
-const int CRijndael::sm_T8[256] =
+static const int sm_T8[256] =
 {
 	-190361519, 1097159550, 396673818, 660510266,
 	-1418998981, -1656360673, -94852180, -486304949,
@@ -626,7 +625,7 @@ const int CRijndael::sm_T8[256] =
 	-880516741, 850817237, 1817998408, -1202240816
 };
 
-const int CRijndael::sm_U1[256] =
+static const int sm_U1[256] =
 {
 	0, 235474187, 470948374, 303765277,
 	941896748, 908933415, 607530554, 708780849,
@@ -694,7 +693,7 @@ const int CRijndael::sm_U1[256] =
 	-1621262146, -1856729675, -2091935064, -1924753501
 };
 
-const int CRijndael::sm_U2[256] =
+static const int sm_U2[256] =
 {
 	0, 185469197, 370938394, 487725847,
 	741876788, 657861945, 975451694, 824852259,
@@ -762,7 +761,7 @@ const int CRijndael::sm_U2[256] =
 	-1096852096, -1248766835, -1467789414, -1551022441,
 };
 
-const int CRijndael::sm_U3[256] =
+static const int sm_U3[256] =
 {
 	0, 218828297, 437656594, 387781147,
 	875313188, 958871085, 775562294, 590424639,
@@ -830,7 +829,7 @@ const int CRijndael::sm_U3[256] =
 	-2134991011, -1917480620, -1700232369, -1750889146
 };
 
-const int CRijndael::sm_U4[256] =
+static const int sm_U4[256] =
 {
 	0, 151849742, 303699484, 454499602,
 	607398968, 758720310, 908999204, 1059270954,
@@ -898,7 +897,7 @@ const int CRijndael::sm_U4[256] =
 	1568718495, 1418573201, 1335535747, 1184342925
 };
 
-const signed char CRijndael::sm_rcon[30] =
+static const signed char sm_rcon[30] =
 {
 	1, 2, 4, 8, 16, 32,
 	64, -128, 27, 54, 108, -40,
@@ -907,7 +906,7 @@ const signed char CRijndael::sm_rcon[30] =
 	-77, 125, -6, -17, -59, -111
 };
 
-const int CRijndael::sm_shifts[3][4][2] =
+static const int sm_shifts[3][4][2] =
 {
 	{ { 0, 0 },{ 1, 3 },{ 2, 2 },{ 3, 1 } },
 	{ { 0, 0 },{ 1, 5 },{ 2, 4 },{ 3, 3 } },
@@ -915,64 +914,82 @@ const int CRijndael::sm_shifts[3][4][2] =
 };
 
 //Null chain
-char const* CRijndael::sm_chain0 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+char const* sm_chain0 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
-//CONSTRUCTOR
-CRijndael::CRijndael() : m_bKeyInit(false)
+//Auxiliary Functions
+//Multiply two elements of GF(2^m)
+static int Mul(int a, int b)
 {
+	return (a != 0 && b != 0) ? sm_alog[(sm_log[a & 0xFF] + sm_log[b & 0xFF]) % 255] : 0;
 }
 
-//DESTRUCTOR
-CRijndael::~CRijndael()
+//Convenience method used in generating Transposition Boxes
+static int Mul4(int a, char b[])
 {
+	if (a == 0)
+		return 0;
+	a = sm_log[a & 0xFF];
+	int a0 = (b[0] != 0) ? sm_alog[(a + sm_log[b[0] & 0xFF]) % 255] & 0xFF : 0;
+	int a1 = (b[1] != 0) ? sm_alog[(a + sm_log[b[1] & 0xFF]) % 255] & 0xFF : 0;
+	int a2 = (b[2] != 0) ? sm_alog[(a + sm_log[b[2] & 0xFF]) % 255] & 0xFF : 0;
+	int a3 = (b[3] != 0) ? sm_alog[(a + sm_log[b[3] & 0xFF]) % 255] & 0xFF : 0;
+	return a0 << 24 | a1 << 16 | a2 << 8 | a3;
 }
+
+//Auxiliary Function
+static void Xor(CRijndael *ctx, char* buff, char const* chain)
+{
+	for (int i = 0; i< ctx->m_blockSize; i++)
+		*(buff++) ^= *(chain++);
+}
+
 
 //Expand a user-supplied key material into a session key.
 // key        - The 128/192/256-bit user-key to use.
 // chain      - initial chain block for CBC and CFB modes.
 // keylength  - 16, 24 or 32 bytes
 // blockSize  - The block size in bytes of this Rijndael (16, 24 or 32 bytes).
-void CRijndael::MakeKey(char const* key, char const* chain, int keylength, int blockSize)
+void CRijndael_MakeKey(CRijndael *ctx, char const* key, char const* chain, int keylength, int blockSize)
 {
 	assert(NULL != key);
 	assert(16 == keylength || 24 == keylength || 32 == keylength);
 	assert(16 == blockSize || 24 == blockSize || 32 == blockSize);
 
-	m_keylength = keylength;
-	m_blockSize = blockSize;
+	ctx->m_keylength = keylength;
+	ctx->m_blockSize = blockSize;
 	//Initialize the chain
-	memcpy(m_chain0, chain, m_blockSize);
-	memcpy(m_chain, chain, m_blockSize);
+	memcpy(ctx->m_chain0, chain, ctx->m_blockSize);
+	memcpy(ctx->m_chain, chain, ctx->m_blockSize);
 	//Calculate Number of Rounds
-	switch (m_keylength)
+	switch (ctx->m_keylength)
 	{
 	case 16:
-		m_iROUNDS = (m_blockSize == 16) ? 10 : (m_blockSize == 24 ? 12 : 14);
+		ctx->m_iROUNDS = (ctx->m_blockSize == 16) ? 10 : (ctx->m_blockSize == 24 ? 12 : 14);
 		break;
 
 	case 24:
-		m_iROUNDS = (m_blockSize != 32) ? 12 : 14;
+		ctx->m_iROUNDS = (ctx->m_blockSize != 32) ? 12 : 14;
 		break;
 
 	default: // 32 bytes = 256 bits
-		m_iROUNDS = 14;
+		ctx->m_iROUNDS = 14;
 	}
-	int BC = m_blockSize / 4;
+	int BC = ctx->m_blockSize / 4;
 	int i, j;
-	for (i = 0; i <= m_iROUNDS; i++)
+	for (i = 0; i <= ctx->m_iROUNDS; i++)
 	{
 		for (j = 0; j<BC; j++)
-			m_Ke[i][j] = 0;
+			ctx->m_Ke[i][j] = 0;
 	}
-	for (i = 0; i <= m_iROUNDS; i++)
+	for (i = 0; i <= ctx->m_iROUNDS; i++)
 	{
 		for (j = 0; j<BC; j++)
-			m_Kd[i][j] = 0;
+			ctx->m_Kd[i][j] = 0;
 	}
-	int ROUND_KEY_COUNT = (m_iROUNDS + 1) * BC;
-	int KC = m_keylength / 4;
+	int ROUND_KEY_COUNT = (ctx->m_iROUNDS + 1) * BC;
+	int KC = ctx->m_keylength / 4;
 	//Copy user material bytes into temporary ints
-	int* pi = tk;
+	int* pi = ctx->tk;
 	char const* pc = key;
 	for (i = 0; i<KC; i++)
 	{
@@ -985,82 +1002,87 @@ void CRijndael::MakeKey(char const* key, char const* chain, int keylength, int b
 	int t = 0;
 	for (j = 0; (j<KC) && (t<ROUND_KEY_COUNT); j++, t++)
 	{
-		m_Ke[t / BC][t%BC] = tk[j];
-		m_Kd[m_iROUNDS - (t / BC)][t%BC] = tk[j];
+		ctx->m_Ke[t / BC][t%BC] = ctx->tk[j];
+		ctx->m_Kd[ctx->m_iROUNDS - (t / BC)][t%BC] = ctx->tk[j];
 	}
 	int tt, rconpointer = 0;
 	while (t < ROUND_KEY_COUNT)
 	{
 		//Extrapolate using phi (the round key evolution function)
-		tt = tk[KC - 1];
-		tk[0] ^= (sm_S[(tt >> 16) & 0xFF] & 0xFF) << 24 ^
+		tt = ctx->tk[KC - 1];
+		ctx->tk[0] ^= (sm_S[(tt >> 16) & 0xFF] & 0xFF) << 24 ^
 			(sm_S[(tt >> 8) & 0xFF] & 0xFF) << 16 ^
 			(sm_S[tt & 0xFF] & 0xFF) << 8 ^
 			(sm_S[(tt >> 24) & 0xFF] & 0xFF) ^
 			(sm_rcon[rconpointer++] & 0xFF) << 24;
 		if (KC != 8)
 			for (i = 1, j = 0; i<KC;)
-				tk[i++] ^= tk[j++];
+				ctx->tk[i++] ^= ctx->tk[j++];
 		else
 		{
 			for (i = 1, j = 0; i<KC / 2; )
-				tk[i++] ^= tk[j++];
-			tt = tk[KC / 2 - 1];
-			tk[KC / 2] ^= (sm_S[tt & 0xFF] & 0xFF) ^
+				ctx->tk[i++] ^= ctx->tk[j++];
+			tt = ctx->tk[KC / 2 - 1];
+			ctx->tk[KC / 2] ^= (sm_S[tt & 0xFF] & 0xFF) ^
 				(sm_S[(tt >> 8) & 0xFF] & 0xFF) << 8 ^
 				(sm_S[(tt >> 16) & 0xFF] & 0xFF) << 16 ^
 				(sm_S[(tt >> 24) & 0xFF] & 0xFF) << 24;
 			for (j = KC / 2, i = j + 1; i<KC; )
-				tk[i++] ^= tk[j++];
+				ctx->tk[i++] ^= ctx->tk[j++];
 		}
 		//Copy values into round key arrays
 		for (j = 0; (j<KC) && (t<ROUND_KEY_COUNT); j++, t++)
 		{
-			m_Ke[t / BC][t%BC] = tk[j];
-			m_Kd[m_iROUNDS - (t / BC)][t%BC] = tk[j];
+			ctx->m_Ke[t / BC][t%BC] = ctx->tk[j];
+			ctx->m_Kd[ctx->m_iROUNDS - (t / BC)][t%BC] = ctx->tk[j];
 		}
 	}
 	//Inverse MixColumn where needed
-	for (int r = 1; r<m_iROUNDS; r++)
+	for (int r = 1; r<ctx->m_iROUNDS; r++)
 		for (j = 0; j<BC; j++)
 		{
-			tt = m_Kd[r][j];
-			m_Kd[r][j] = sm_U1[(tt >> 24) & 0xFF] ^
+			tt = ctx->m_Kd[r][j];
+			ctx->m_Kd[r][j] = sm_U1[(tt >> 24) & 0xFF] ^
 				sm_U2[(tt >> 16) & 0xFF] ^
 				sm_U3[(tt >> 8) & 0xFF] ^
 				sm_U4[tt & 0xFF];
 		}
-	m_bKeyInit = true;
+	ctx->m_bKeyInit = true;
 }
 
 //Convenience method to encrypt exactly one block of plaintext, assuming
 //Rijndael's default block size (128-bit).
 // in         - The plaintext
 // result     - The ciphertext generated from a plaintext using the key
-void CRijndael::DefEncryptBlock(char const* in, char* result)
+static void DefEncryptBlock(CRijndael *ctx, char const* in, char* result)
 {
-	int* Ker = m_Ke[0];
+	int* Ker = ctx->m_Ke[0];
 	int t0 = ((unsigned char)*(in++) << 24);
 	t0 |= ((unsigned char)*(in++) << 16);
 	t0 |= ((unsigned char)*(in++) << 8);
-	(t0 |= (unsigned char)*(in++)) ^= Ker[0];
+	t0 |= (unsigned char)*(in++);
+	t0 ^= Ker[0];
 	int t1 = ((unsigned char)*(in++) << 24);
 	t1 |= ((unsigned char)*(in++) << 16);
 	t1 |= ((unsigned char)*(in++) << 8);
-	(t1 |= (unsigned char)*(in++)) ^= Ker[1];
+	t1 |= (unsigned char)*(in++);
+	t1 ^= Ker[1];
 	int t2 = ((unsigned char)*(in++) << 24);
 	t2 |= ((unsigned char)*(in++) << 16);
 	t2 |= ((unsigned char)*(in++) << 8);
-	(t2 |= (unsigned char)*(in++)) ^= Ker[2];
+	t2 |= (unsigned char)*(in++);
+	t2 ^= Ker[2];
 	int t3 = ((unsigned char)*(in++) << 24);
 	t3 |= ((unsigned char)*(in++) << 16);
 	t3 |= ((unsigned char)*(in++) << 8);
-	(t3 |= (unsigned char)*(in++)) ^= Ker[3];
+	t3 |= (unsigned char)*(in++);
+	t3 ^= Ker[3];
+
 	int a0, a1, a2, a3;
 	//Apply Round Transforms
-	for (int r = 1; r < m_iROUNDS; r++)
+	for (int r = 1; r < ctx->m_iROUNDS; r++)
 	{
-		Ker = m_Ke[r];
+		Ker = ctx->m_Ke[r];
 		a0 = (sm_T1[(t0 >> 24) & 0xFF] ^
 			sm_T2[(t1 >> 16) & 0xFF] ^
 			sm_T3[(t2 >> 8) & 0xFF] ^
@@ -1083,7 +1105,7 @@ void CRijndael::DefEncryptBlock(char const* in, char* result)
 		t3 = a3;
 	}
 	//Last Round is special
-	Ker = m_Ke[m_iROUNDS];
+	Ker = ctx->m_Ke[ctx->m_iROUNDS];
 	int tt = Ker[0];
 	result[0] = sm_S[(t0 >> 24) & 0xFF] ^ (tt >> 24);
 	result[1] = sm_S[(t1 >> 16) & 0xFF] ^ (tt >> 16);
@@ -1110,29 +1132,33 @@ void CRijndael::DefEncryptBlock(char const* in, char* result)
 //Rijndael's default block size (128-bit).
 // in         - The ciphertext.
 // result     - The plaintext generated from a ciphertext using the session key.
-void CRijndael::DefDecryptBlock(char const* in, char* result)
+void DefDecryptBlock(CRijndael *ctx, char const* in, char* result)
 {
-	int* Kdr = m_Kd[0];
+	int* Kdr = ctx->m_Kd[0];
 	int t0 = ((unsigned char)*(in++) << 24);
 	t0 = t0 | ((unsigned char)*(in++) << 16);
 	t0 |= ((unsigned char)*(in++) << 8);
-	(t0 |= (unsigned char)*(in++)) ^= Kdr[0];
+	t0 |= (unsigned char)*(in++);
+	t0 ^= Kdr[0];
 	int t1 = ((unsigned char)*(in++) << 24);
 	t1 |= ((unsigned char)*(in++) << 16);
 	t1 |= ((unsigned char)*(in++) << 8);
-	(t1 |= (unsigned char)*(in++)) ^= Kdr[1];
+	t1 |= (unsigned char)*(in++);
+	t1 ^= Kdr[1];
 	int t2 = ((unsigned char)*(in++) << 24);
 	t2 |= ((unsigned char)*(in++) << 16);
 	t2 |= ((unsigned char)*(in++) << 8);
-	(t2 |= (unsigned char)*(in++)) ^= Kdr[2];
+	t2 |= (unsigned char)*(in++);
+	t2 ^= Kdr[2];
 	int t3 = ((unsigned char)*(in++) << 24);
 	t3 |= ((unsigned char)*(in++) << 16);
 	t3 |= ((unsigned char)*(in++) << 8);
-	(t3 |= (unsigned char)*(in++)) ^= Kdr[3];
+	t3 |= (unsigned char)*(in++);
+	t3 ^= Kdr[3];
 	int a0, a1, a2, a3;
-	for (int r = 1; r < m_iROUNDS; r++) // apply round transforms
+	for (int r = 1; r < ctx->m_iROUNDS; r++) // apply round transforms
 	{
-		Kdr = m_Kd[r];
+		Kdr = ctx->m_Kd[r];
 		a0 = (sm_T5[(t0 >> 24) & 0xFF] ^
 			sm_T6[(t3 >> 16) & 0xFF] ^
 			sm_T7[(t2 >> 8) & 0xFF] ^
@@ -1155,7 +1181,7 @@ void CRijndael::DefDecryptBlock(char const* in, char* result)
 		t3 = a3;
 	}
 	//Last Round is special
-	Kdr = m_Kd[m_iROUNDS];
+	Kdr = ctx->m_Kd[ctx->m_iROUNDS];
 	int tt = Kdr[0];
 	result[0] = sm_Si[(t0 >> 24) & 0xFF] ^ (tt >> 24);
 	result[1] = sm_Si[(t3 >> 16) & 0xFF] ^ (tt >> 16);
@@ -1181,14 +1207,14 @@ void CRijndael::DefDecryptBlock(char const* in, char* result)
 //Encrypt exactly one block of plaintext.
 // in           - The plaintext.
 // result       - The ciphertext generated from a plaintext using the key.
-void CRijndael::EncryptBlock(char const* in, char* result)
+void CRijndael_EncryptBlock(CRijndael *ctx, char const* in, char* result)
 {
-	if (DEFAULT_BLOCK_SIZE == m_blockSize)
+	if (DEFAULT_BLOCK_SIZE == ctx->m_blockSize)
 	{
-		DefEncryptBlock(in, result);
+		DefEncryptBlock(ctx, in, result);
 		return;
 	}
-	int BC = m_blockSize / 4;
+	int BC = ctx->m_blockSize / 4;
 	int SC = (BC == 4) ? 0 : (BC == 6 ? 1 : 2);
 	int s1 = sm_shifts[SC][1][0];
 	int s2 = sm_shifts[SC][2][0];
@@ -1196,47 +1222,48 @@ void CRijndael::EncryptBlock(char const* in, char* result)
 	//Temporary Work Arrays
 	int i;
 	int tt;
-	int* pi = t;
+	int* pi = ctx->t;
 	for (i = 0; i<BC; i++)
 	{
 		*pi = ((unsigned char)*(in++) << 24);
 		*pi |= ((unsigned char)*(in++) << 16);
 		*pi |= ((unsigned char)*(in++) << 8);
-		(*(pi++) |= (unsigned char)*(in++)) ^= m_Ke[0][i];
+		*pi |= (unsigned char)*(in++);
+		*(pi++) ^= ctx->m_Ke[0][i];
 	}
 	//Apply Round Transforms
-	for (int r = 1; r<m_iROUNDS; r++)
+	for (int r = 1; r<ctx->m_iROUNDS; r++)
 	{
 		for (i = 0; i<BC; i++)
-			a[i] = (sm_T1[(t[i] >> 24) & 0xFF] ^
-				sm_T2[(t[(i + s1) % BC] >> 16) & 0xFF] ^
-				sm_T3[(t[(i + s2) % BC] >> 8) & 0xFF] ^
-				sm_T4[t[(i + s3) % BC] & 0xFF]) ^ m_Ke[r][i];
-		memcpy(t, a, 4 * BC);
+			ctx->a[i] = (sm_T1[(ctx->t[i] >> 24) & 0xFF] ^
+				sm_T2[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^
+				sm_T3[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^
+				sm_T4[ctx->t[(i + s3) % BC] & 0xFF]) ^ ctx->m_Ke[r][i];
+		memcpy(ctx->t, ctx->a, 4 * BC);
 	}
 	int j;
 	//Last Round is Special
 	for (i = 0, j = 0; i<BC; i++)
 	{
-		tt = m_Ke[m_iROUNDS][i];
-		result[j++] = sm_S[(t[i] >> 24) & 0xFF] ^ (tt >> 24);
-		result[j++] = sm_S[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
-		result[j++] = sm_S[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
-		result[j++] = sm_S[t[(i + s3) % BC] & 0xFF] ^ tt;
+		tt = ctx->m_Ke[ctx->m_iROUNDS][i];
+		result[j++] = sm_S[(ctx->t[i] >> 24) & 0xFF] ^ (tt >> 24);
+		result[j++] = sm_S[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
+		result[j++] = sm_S[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
+		result[j++] = sm_S[ctx->t[(i + s3) % BC] & 0xFF] ^ tt;
 	}
 }
 
 //Decrypt exactly one block of ciphertext.
 // in         - The ciphertext.
 // result     - The plaintext generated from a ciphertext using the session key.
-void CRijndael::DecryptBlock(char const* in, char* result)
+void CRijndael_DecryptBlock(CRijndael *ctx, char const* in, char* result)
 {
-	if (DEFAULT_BLOCK_SIZE == m_blockSize)
+	if (DEFAULT_BLOCK_SIZE == ctx->m_blockSize)
 	{
-		DefDecryptBlock(in, result);
+		DefDecryptBlock(ctx, in, result);
 		return;
 	}
-	int BC = m_blockSize / 4;
+	int BC = ctx->m_blockSize / 4;
 	int SC = BC == 4 ? 0 : (BC == 6 ? 1 : 2);
 	int s1 = sm_shifts[SC][1][1];
 	int s2 = sm_shifts[SC][2][1];
@@ -1244,113 +1271,33 @@ void CRijndael::DecryptBlock(char const* in, char* result)
 	//Temporary Work Arrays
 	int i;
 	int tt;
-	int* pi = t;
+	int* pi = ctx->t;
 	for (i = 0; i<BC; i++)
 	{
 		*pi = ((unsigned char)*(in++) << 24);
 		*pi |= ((unsigned char)*(in++) << 16);
 		*pi |= ((unsigned char)*(in++) << 8);
-		(*(pi++) |= (unsigned char)*(in++)) ^= m_Kd[0][i];
+		*pi |= (unsigned char)*(in++);
+		*(pi++) ^= ctx->m_Kd[0][i];
 	}
 	//Apply Round Transforms
-	for (int r = 1; r<m_iROUNDS; r++)
+	for (int r = 1; r<ctx->m_iROUNDS; r++)
 	{
 		for (i = 0; i<BC; i++)
-			a[i] = (sm_T5[(t[i] >> 24) & 0xFF] ^
-				sm_T6[(t[(i + s1) % BC] >> 16) & 0xFF] ^
-				sm_T7[(t[(i + s2) % BC] >> 8) & 0xFF] ^
-				sm_T8[t[(i + s3) % BC] & 0xFF]) ^ m_Kd[r][i];
-		memcpy(t, a, 4 * BC);
+			ctx->a[i] = (sm_T5[(ctx->t[i] >> 24) & 0xFF] ^
+				sm_T6[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^
+				sm_T7[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^
+				sm_T8[ctx->t[(i + s3) % BC] & 0xFF]) ^ ctx->m_Kd[r][i];
+		memcpy(ctx->t, ctx->a, 4 * BC);
 	}
 	int j;
 	//Last Round is Special
 	for (i = 0, j = 0; i<BC; i++)
 	{
-		tt = m_Kd[m_iROUNDS][i];
-		result[j++] = sm_Si[(t[i] >> 24) & 0xFF] ^ (tt >> 24);
-		result[j++] = sm_Si[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
-		result[j++] = sm_Si[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
-		result[j++] = sm_Si[t[(i + s3) % BC] & 0xFF] ^ tt;
-	}
-}
-
-void CRijndael::Encrypt(char const* in, char* result, size_t n, int iMode)
-{
-	//n should be > 0 and multiple of m_blockSize
-	assert(0 != n && n % m_blockSize == 0);
-	int i;
-	char const* pin;
-	char* presult;
-	if (CBC == iMode) //CBC mode, using the Chain
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			Xor(m_chain, pin);
-			EncryptBlock(m_chain, presult);
-			memcpy(m_chain, presult, m_blockSize);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
-	}
-	else if (CFB == iMode) //CFB mode, using the Chain
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			EncryptBlock(m_chain, presult);
-			Xor(presult, pin);
-			memcpy(m_chain, presult, m_blockSize);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
-	}
-	else //ECB mode, not using the Chain
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			EncryptBlock(pin, presult);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
-	}
-}
-
-void CRijndael::Decrypt(char const* in, char* result, size_t n, int iMode)
-{
-	//n should be > 0 and multiple of m_blockSize
-	assert(0 != n && n % m_blockSize == 0);
-	int i;
-	char const* pin;
-	char* presult;
-	if (CBC == iMode) //CBC mode, using the Chain
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			DecryptBlock(pin, presult);
-			Xor(presult, m_chain);
-			memcpy(m_chain, pin, m_blockSize);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
-	}
-	else if (CFB == iMode) //CFB mode, using the Chain, not using Decrypt()
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			EncryptBlock(m_chain, presult);
-			//memcpy(presult, pin, m_blockSize);
-			Xor(presult, pin);
-			memcpy(m_chain, pin, m_blockSize);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
-	}
-	else //ECB mode, not using the Chain
-	{
-		for (i = 0, pin = in, presult = result; i<n / m_blockSize; i++)
-		{
-			DecryptBlock(pin, presult);
-			pin += m_blockSize;
-			presult += m_blockSize;
-		}
+		tt = ctx->m_Kd[ctx->m_iROUNDS][i];
+		result[j++] = sm_Si[(ctx->t[i] >> 24) & 0xFF] ^ (tt >> 24);
+		result[j++] = sm_Si[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
+		result[j++] = sm_Si[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
+		result[j++] = sm_Si[ctx->t[(i + s3) % BC] & 0xFF] ^ tt;
 	}
 }

@@ -1,5 +1,5 @@
+#include <string.h>
 #include "RevSpoofer.h"
-#include <cstring>
 
 #define astrlen(x) sizeof(x) - 1
 
@@ -49,7 +49,7 @@ static bool ScanNext(char* pszInput, int uIndex, unsigned int uPrevHash)
 
 	for (int i = 0; i < astrlen(s_szDictionary); i++)
 	{
-		auto h = uPrevHash ^ ((uPrevHash >> 2) + (uPrevHash << 5) + s_szDictionary[i]);
+		unsigned int h = uPrevHash ^ ((uPrevHash >> 2) + (uPrevHash << 5) + s_szDictionary[i]);
 
 		if (uIndex + 1 < iInputLen - 3)
 			res = ScanNext(pszInput, uIndex + 1, h);
@@ -65,32 +65,29 @@ static bool ScanNext(char* pszInput, int uIndex, unsigned int uPrevHash)
 	return false;
 }
 
-namespace RevSpoofer
+bool RevSpoofer_Spoof(char *pszDest, int uSID)
 {
-	bool Spoof(char *pszDest, int uSID)
-	{
-		uTreasure = uSID;
-		iInputLen = strlen(pszDest);
+	uTreasure = uSID;
+	iInputLen = strlen(pszDest);
 
-		auto i = iInputLen - 7;
-		i = (i < 0) ? 0 : i;
-		pszDest[i] = '\0';
-		auto h = Hash(pszDest);
-		return ScanNext(pszDest, i, h);
+	int i = iInputLen - 7;
+	i = (i < 0) ? 0 : i;
+	pszDest[i] = '\0';
+	unsigned int h = RevSpoofer_Hash(pszDest);
+	return ScanNext(pszDest, i, h);
+}
+
+unsigned int RevSpoofer_Hash(char *pszString)
+{
+	int i = 0;
+	unsigned int nHash = 0x4E67C6A7;
+	int c = pszString[i++];
+
+	while (c)
+	{
+		nHash = nHash ^ ((nHash >> 2) + (nHash << 5) + c);
+		c = pszString[i++];
 	}
 
-	unsigned int Hash(char *pszString)
-	{
-		int i = 0;
-		unsigned int nHash = 0x4E67C6A7;
-		int c = pszString[i++];
-
-		while (c)
-		{
-			nHash = nHash ^ ((nHash >> 2) + (nHash << 5) + c);
-			c = pszString[i++];
-		}
-
-		return nHash;
-	}
+	return nHash;
 }

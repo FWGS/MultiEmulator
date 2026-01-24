@@ -9,13 +9,13 @@ int GenerateSC2009(void* pDest, const char *szXashID, int nSteamID)
 
 	strncpy(hwid, szXashID, 32);
 	hwid[32] = 0;
-	if (!RevSpoofer::Spoof(hwid, nSteamID))
+	if (!RevSpoofer_Spoof(hwid, nSteamID))
 		return 0;
 
-	auto pTicket = (int*)pDest;
-	auto pbTicket = (unsigned char*)pDest;
+	int *pTicket = (int*)pDest;
+	unsigned char *pbTicket = (unsigned char*)pDest;
 
-	auto revHash = RevSpoofer::Hash(hwid);
+	unsigned int revHash = RevSpoofer_Hash(hwid);
 
 	pTicket[0] = 'S';          // +0
 	pTicket[1] = revHash;      // +4
@@ -27,25 +27,28 @@ int GenerateSC2009(void* pDest, const char *szXashID, int nSteamID)
 	/* Encrypt HWID with AESKeyRand key and save it in the ticket. */
 	static const char AESKeyRand[] = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 	char AESHashRand[32];
-	auto AESRand = CRijndael();
-	AESRand.MakeKey(AESKeyRand, CRijndael::sm_chain0, 32, 32);
-	AESRand.EncryptBlock(hwid, AESHashRand);
+	CRijndael AESRand;
+	CRijndael_Init( &AESRand );
+	CRijndael_MakeKey( &AESRand, AESKeyRand, sm_chain0, 32, 32 );
+	CRijndael_EncryptBlock( &AESRand, hwid, AESHashRand );
 	memcpy(&pbTicket[24], AESHashRand, 32);
 
 	/* Encrypt AESKeyRand with AESKeyRev key and save it in the ticket.
 	 * AESKeyRev key is identical to the key in dproto/reunion. */
 	static const char AESKeyRev[] = "_YOU_SERIOUSLY_NEED_TO_GET_LAID_";
 	char AESHashRev[32];
-	auto AESRev = CRijndael();
-	AESRev.MakeKey(AESKeyRev, CRijndael::sm_chain0, 32, 32);
-	AESRev.EncryptBlock(AESKeyRand, AESHashRev);
+	CRijndael AESRev;
+	CRijndael_Init( &AESRev );
+	CRijndael_MakeKey( &AESRev, AESKeyRev, sm_chain0, 32, 32 );
+	CRijndael_EncryptBlock( &AESRev, AESKeyRand, AESHashRev );
 	memcpy(&pbTicket[56], AESHashRev, 32);
 
 	/* Perform HWID hashing and save hash to the ticket. */
 	char SHAHash[32];
-	auto sha = CSHA(CSHA::SHA256);
-	sha.AddData(hwid, 32);
-	sha.FinalDigest(SHAHash);
+	CSHA sha;
+	CSHA_Reset( &sha );
+	CSHA_AddData( &sha, hwid, 32 );
+	CSHA_FinalDigest( &sha, SHAHash );
 	memcpy(&pbTicket[88], SHAHash, 32);
 
 	return 178;

@@ -15,7 +15,7 @@ def configure(conf):
 
 def build(bld):
 	bld.stlib(
-		source   = bld.path.ant_glob(['src/*.cpp']),
+		source   = bld.path.ant_glob(['src/*.c']),
 		target   = 'MultiEmulator',
 		includes = ['include/', 'src/'],
 		export_includes = ['include/']
@@ -23,7 +23,7 @@ def build(bld):
 
 	if bld.env.TESTS:
 		tests = {
-			'sha256': 'tests/test_sha256.cpp',
+			'sha256': 'tests/test_sha256.c',
 		}
 
 		for i in tests:

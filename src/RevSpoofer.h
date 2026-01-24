@@ -1,7 +1,4 @@
 #pragma once
 
-namespace RevSpoofer
-{
-	bool Spoof(char *pszDest, int uSID);
-	unsigned int Hash(char *pszString);
-}
+bool RevSpoofer_Spoof(char *pszDest, int uSID);
+unsigned int RevSpoofer_Hash(char *pszString);

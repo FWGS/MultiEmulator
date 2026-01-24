@@ -2,8 +2,8 @@
 
 int GenerateOldRevEmu(void* pDest, int nSteamID)
 {
-	auto pTicket = (int*)pDest;
-	auto pbTicket = (unsigned char*)pDest;
+	int *pTicket = (int*)pDest;
+	unsigned char *pbTicket = (unsigned char*)pDest;
 
 	pTicket[0] = 0xFFFF;                       // +0, header
 	pTicket[1] = (nSteamID ^ 0xC9710266) << 1; // +4, SteamId
