@@ -2,6 +2,7 @@
 #define __RIJNDAEL_H__
 
 #include <string.h>
+#include <stdbool.h>
 
 //Rijndael (pronounced Reindaal) is a block cipher, designed by Joan Daemen and Vincent Rijmen as a candidate algorithm for the AES.
 //The cipher has a variable block length and key length. The authors currently specify how to use keys with a length

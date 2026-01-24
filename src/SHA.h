@@ -3,6 +3,8 @@
 #ifndef __SHA_H__ 
 #define __SHA_H__ 
 
+#include <stdbool.h>
+
 //Typical DISCLAIMER: 
 //The code in this project is Copyright (C) 2003 by George Anescu. You have the right to 
 //use and distribute the code in any way you see fit as long as this paragraph is included 
