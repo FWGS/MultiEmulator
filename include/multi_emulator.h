@@ -3,13 +3,13 @@
 
 #if defined( __GNUC__ )
 	#if defined( __i386__ )
-		#define ME_EXPORT         __attribute__(( visibility( "default" ), force_align_arg_pointer ))
+		#define ME_EXPORT __attribute__(( visibility( "default" ), force_align_arg_pointer ))
 	#else
-		#define ME_EXPORT         __attribute__(( visibility ( "default" )))
+		#define ME_EXPORT __attribute__(( visibility( "default" )))
 	#endif
 #else
 	#if defined( _MSC_VER )
-		#define ME_EXPORT         __declspec( dllexport )
+		#define ME_EXPORT __declspec( dllexport )
 	#else
 		#define ME_EXPORT
 	#endif

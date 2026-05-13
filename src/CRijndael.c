@@ -908,67 +908,66 @@ static const signed char sm_rcon[30] =
 
 static const int sm_shifts[3][4][2] =
 {
-	{ { 0, 0 },{ 1, 3 },{ 2, 2 },{ 3, 1 } },
-	{ { 0, 0 },{ 1, 5 },{ 2, 4 },{ 3, 3 } },
-	{ { 0, 0 },{ 1, 7 },{ 3, 5 },{ 4, 4 } }
+	{ { 0, 0 }, { 1, 3 }, { 2, 2 }, { 3, 1 } },
+	{ { 0, 0 }, { 1, 5 }, { 2, 4 }, { 3, 3 } },
+	{ { 0, 0 }, { 1, 7 }, { 3, 5 }, { 4, 4 } }
 };
 
-//Null chain
-char const* sm_chain0 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+// Null chain
+char const *sm_chain0 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
-//Auxiliary Functions
-//Multiply two elements of GF(2^m)
-static int Mul(int a, int b)
+// Auxiliary Functions
+// Multiply two elements of GF(2^m)
+static int Mul( int a, int b )
 {
-	return (a != 0 && b != 0) ? sm_alog[(sm_log[a & 0xFF] + sm_log[b & 0xFF]) % 255] : 0;
+	return ( a != 0 && b != 0 ) ? sm_alog[( sm_log[a & 0xFF] + sm_log[b & 0xFF] ) % 255] : 0;
 }
 
-//Convenience method used in generating Transposition Boxes
-static int Mul4(int a, char b[])
+// Convenience method used in generating Transposition Boxes
+static int Mul4( int a, char b[] )
 {
-	if (a == 0)
+	if( a == 0 )
 		return 0;
 	a = sm_log[a & 0xFF];
-	int a0 = (b[0] != 0) ? sm_alog[(a + sm_log[b[0] & 0xFF]) % 255] & 0xFF : 0;
-	int a1 = (b[1] != 0) ? sm_alog[(a + sm_log[b[1] & 0xFF]) % 255] & 0xFF : 0;
-	int a2 = (b[2] != 0) ? sm_alog[(a + sm_log[b[2] & 0xFF]) % 255] & 0xFF : 0;
-	int a3 = (b[3] != 0) ? sm_alog[(a + sm_log[b[3] & 0xFF]) % 255] & 0xFF : 0;
+	int a0 = ( b[0] != 0 ) ? sm_alog[( a + sm_log[b[0] & 0xFF] ) % 255] & 0xFF : 0;
+	int a1 = ( b[1] != 0 ) ? sm_alog[( a + sm_log[b[1] & 0xFF] ) % 255] & 0xFF : 0;
+	int a2 = ( b[2] != 0 ) ? sm_alog[( a + sm_log[b[2] & 0xFF] ) % 255] & 0xFF : 0;
+	int a3 = ( b[3] != 0 ) ? sm_alog[( a + sm_log[b[3] & 0xFF] ) % 255] & 0xFF : 0;
 	return a0 << 24 | a1 << 16 | a2 << 8 | a3;
 }
 
-//Auxiliary Function
-static void Xor(CRijndael *ctx, char* buff, char const* chain)
+// Auxiliary Function
+static void Xor( CRijndael *ctx, char *buff, char const *chain )
 {
-	for (int i = 0; i< ctx->m_blockSize; i++)
-		*(buff++) ^= *(chain++);
+	for( int i = 0; i < ctx->m_blockSize; i++ )
+		*( buff++ ) ^= *( chain++ );
 }
 
-
-//Expand a user-supplied key material into a session key.
+// Expand a user-supplied key material into a session key.
 // key        - The 128/192/256-bit user-key to use.
 // chain      - initial chain block for CBC and CFB modes.
 // keylength  - 16, 24 or 32 bytes
 // blockSize  - The block size in bytes of this Rijndael (16, 24 or 32 bytes).
-void CRijndael_MakeKey(CRijndael *ctx, char const* key, char const* chain, int keylength, int blockSize)
+void CRijndael_MakeKey( CRijndael *ctx, char const *key, char const *chain, int keylength, int blockSize )
 {
-	assert(NULL != key);
-	assert(16 == keylength || 24 == keylength || 32 == keylength);
-	assert(16 == blockSize || 24 == blockSize || 32 == blockSize);
+	assert( NULL != key );
+	assert( 16 == keylength || 24 == keylength || 32 == keylength );
+	assert( 16 == blockSize || 24 == blockSize || 32 == blockSize );
 
 	ctx->m_keylength = keylength;
 	ctx->m_blockSize = blockSize;
-	//Initialize the chain
-	memcpy(ctx->m_chain0, chain, ctx->m_blockSize);
-	memcpy(ctx->m_chain, chain, ctx->m_blockSize);
-	//Calculate Number of Rounds
-	switch (ctx->m_keylength)
+	// Initialize the chain
+	memcpy( ctx->m_chain0, chain, ctx->m_blockSize );
+	memcpy( ctx->m_chain, chain, ctx->m_blockSize );
+	// Calculate Number of Rounds
+	switch( ctx->m_keylength )
 	{
 	case 16:
-		ctx->m_iROUNDS = (ctx->m_blockSize == 16) ? 10 : (ctx->m_blockSize == 24 ? 12 : 14);
+		ctx->m_iROUNDS = ( ctx->m_blockSize == 16 ) ? 10 : ( ctx->m_blockSize == 24 ? 12 : 14 );
 		break;
 
 	case 24:
-		ctx->m_iROUNDS = (ctx->m_blockSize != 32) ? 12 : 14;
+		ctx->m_iROUNDS = ( ctx->m_blockSize != 32 ) ? 12 : 14;
 		break;
 
 	default: // 32 bytes = 256 bits
@@ -976,328 +975,328 @@ void CRijndael_MakeKey(CRijndael *ctx, char const* key, char const* chain, int k
 	}
 	int BC = ctx->m_blockSize / 4;
 	int i, j;
-	for (i = 0; i <= ctx->m_iROUNDS; i++)
+	for( i = 0; i <= ctx->m_iROUNDS; i++ )
 	{
-		for (j = 0; j<BC; j++)
+		for( j = 0; j < BC; j++ )
 			ctx->m_Ke[i][j] = 0;
 	}
-	for (i = 0; i <= ctx->m_iROUNDS; i++)
+	for( i = 0; i <= ctx->m_iROUNDS; i++ )
 	{
-		for (j = 0; j<BC; j++)
+		for( j = 0; j < BC; j++ )
 			ctx->m_Kd[i][j] = 0;
 	}
-	int ROUND_KEY_COUNT = (ctx->m_iROUNDS + 1) * BC;
+	int ROUND_KEY_COUNT = ( ctx->m_iROUNDS + 1 ) * BC;
 	int KC = ctx->m_keylength / 4;
-	//Copy user material bytes into temporary ints
-	int* pi = ctx->tk;
-	char const* pc = key;
-	for (i = 0; i<KC; i++)
+	// Copy user material bytes into temporary ints
+	int *pi = ctx->tk;
+	char const *pc = key;
+	for( i = 0; i < KC; i++ )
 	{
-		*pi = (unsigned char)*(pc++) << 24;
-		*pi |= (unsigned char)*(pc++) << 16;
-		*pi |= (unsigned char)*(pc++) << 8;
-		*(pi++) |= (unsigned char)*(pc++);
+		*pi = (unsigned char)*( pc++ ) << 24;
+		*pi |= (unsigned char)*( pc++ ) << 16;
+		*pi |= (unsigned char)*( pc++ ) << 8;
+		*( pi++ ) |= (unsigned char)*( pc++ );
 	}
-	//Copy values into round key arrays
+	// Copy values into round key arrays
 	int t = 0;
-	for (j = 0; (j<KC) && (t<ROUND_KEY_COUNT); j++, t++)
+	for( j = 0; ( j < KC ) && ( t < ROUND_KEY_COUNT ); j++, t++ )
 	{
-		ctx->m_Ke[t / BC][t%BC] = ctx->tk[j];
-		ctx->m_Kd[ctx->m_iROUNDS - (t / BC)][t%BC] = ctx->tk[j];
+		ctx->m_Ke[t / BC][t % BC] = ctx->tk[j];
+		ctx->m_Kd[ctx->m_iROUNDS - ( t / BC )][t % BC] = ctx->tk[j];
 	}
 	int tt, rconpointer = 0;
-	while (t < ROUND_KEY_COUNT)
+	while( t < ROUND_KEY_COUNT )
 	{
-		//Extrapolate using phi (the round key evolution function)
+		// Extrapolate using phi (the round key evolution function)
 		tt = ctx->tk[KC - 1];
-		ctx->tk[0] ^= (sm_S[(tt >> 16) & 0xFF] & 0xFF) << 24 ^
-			(sm_S[(tt >> 8) & 0xFF] & 0xFF) << 16 ^
-			(sm_S[tt & 0xFF] & 0xFF) << 8 ^
-			(sm_S[(tt >> 24) & 0xFF] & 0xFF) ^
-			(sm_rcon[rconpointer++] & 0xFF) << 24;
-		if (KC != 8)
-			for (i = 1, j = 0; i<KC;)
+		ctx->tk[0] ^= ( sm_S[( tt >> 16 ) & 0xFF] & 0xFF ) << 24
+			      ^ ( sm_S[( tt >> 8 ) & 0xFF] & 0xFF ) << 16
+			      ^ ( sm_S[tt & 0xFF] & 0xFF ) << 8
+			      ^ ( sm_S[( tt >> 24 ) & 0xFF] & 0xFF )
+			      ^ ( sm_rcon[rconpointer++] & 0xFF ) << 24;
+		if( KC != 8 )
+			for( i = 1, j = 0; i < KC; )
 				ctx->tk[i++] ^= ctx->tk[j++];
 		else
 		{
-			for (i = 1, j = 0; i<KC / 2; )
+			for( i = 1, j = 0; i < KC / 2; )
 				ctx->tk[i++] ^= ctx->tk[j++];
 			tt = ctx->tk[KC / 2 - 1];
-			ctx->tk[KC / 2] ^= (sm_S[tt & 0xFF] & 0xFF) ^
-				(sm_S[(tt >> 8) & 0xFF] & 0xFF) << 8 ^
-				(sm_S[(tt >> 16) & 0xFF] & 0xFF) << 16 ^
-				(sm_S[(tt >> 24) & 0xFF] & 0xFF) << 24;
-			for (j = KC / 2, i = j + 1; i<KC; )
+			ctx->tk[KC / 2] ^= ( sm_S[tt & 0xFF] & 0xFF )
+					   ^ ( sm_S[( tt >> 8 ) & 0xFF] & 0xFF ) << 8
+					   ^ ( sm_S[( tt >> 16 ) & 0xFF] & 0xFF ) << 16
+					   ^ ( sm_S[( tt >> 24 ) & 0xFF] & 0xFF ) << 24;
+			for( j = KC / 2, i = j + 1; i < KC; )
 				ctx->tk[i++] ^= ctx->tk[j++];
 		}
-		//Copy values into round key arrays
-		for (j = 0; (j<KC) && (t<ROUND_KEY_COUNT); j++, t++)
+		// Copy values into round key arrays
+		for( j = 0; ( j < KC ) && ( t < ROUND_KEY_COUNT ); j++, t++ )
 		{
-			ctx->m_Ke[t / BC][t%BC] = ctx->tk[j];
-			ctx->m_Kd[ctx->m_iROUNDS - (t / BC)][t%BC] = ctx->tk[j];
+			ctx->m_Ke[t / BC][t % BC] = ctx->tk[j];
+			ctx->m_Kd[ctx->m_iROUNDS - ( t / BC )][t % BC] = ctx->tk[j];
 		}
 	}
-	//Inverse MixColumn where needed
-	for (int r = 1; r<ctx->m_iROUNDS; r++)
-		for (j = 0; j<BC; j++)
+	// Inverse MixColumn where needed
+	for( int r = 1; r < ctx->m_iROUNDS; r++ )
+		for( j = 0; j < BC; j++ )
 		{
 			tt = ctx->m_Kd[r][j];
-			ctx->m_Kd[r][j] = sm_U1[(tt >> 24) & 0xFF] ^
-				sm_U2[(tt >> 16) & 0xFF] ^
-				sm_U3[(tt >> 8) & 0xFF] ^
-				sm_U4[tt & 0xFF];
+			ctx->m_Kd[r][j] = sm_U1[( tt >> 24 ) & 0xFF]
+					  ^ sm_U2[( tt >> 16 ) & 0xFF]
+					  ^ sm_U3[( tt >> 8 ) & 0xFF]
+					  ^ sm_U4[tt & 0xFF];
 		}
 	ctx->m_bKeyInit = true;
 }
 
-//Convenience method to encrypt exactly one block of plaintext, assuming
-//Rijndael's default block size (128-bit).
+// Convenience method to encrypt exactly one block of plaintext, assuming
+// Rijndael's default block size (128-bit).
 // in         - The plaintext
 // result     - The ciphertext generated from a plaintext using the key
-static void DefEncryptBlock(CRijndael *ctx, char const* in, char* result)
+static void DefEncryptBlock( CRijndael *ctx, char const *in, char *result )
 {
-	int* Ker = ctx->m_Ke[0];
-	int t0 = ((unsigned char)*(in++) << 24);
-	t0 |= ((unsigned char)*(in++) << 16);
-	t0 |= ((unsigned char)*(in++) << 8);
-	t0 |= (unsigned char)*(in++);
+	int *Ker = ctx->m_Ke[0];
+	int t0 = ((unsigned char)*( in++ ) << 24 );
+	t0 |= ((unsigned char)*( in++ ) << 16 );
+	t0 |= ((unsigned char)*( in++ ) << 8 );
+	t0 |= (unsigned char)*( in++ );
 	t0 ^= Ker[0];
-	int t1 = ((unsigned char)*(in++) << 24);
-	t1 |= ((unsigned char)*(in++) << 16);
-	t1 |= ((unsigned char)*(in++) << 8);
-	t1 |= (unsigned char)*(in++);
+	int t1 = ((unsigned char)*( in++ ) << 24 );
+	t1 |= ((unsigned char)*( in++ ) << 16 );
+	t1 |= ((unsigned char)*( in++ ) << 8 );
+	t1 |= (unsigned char)*( in++ );
 	t1 ^= Ker[1];
-	int t2 = ((unsigned char)*(in++) << 24);
-	t2 |= ((unsigned char)*(in++) << 16);
-	t2 |= ((unsigned char)*(in++) << 8);
-	t2 |= (unsigned char)*(in++);
+	int t2 = ((unsigned char)*( in++ ) << 24 );
+	t2 |= ((unsigned char)*( in++ ) << 16 );
+	t2 |= ((unsigned char)*( in++ ) << 8 );
+	t2 |= (unsigned char)*( in++ );
 	t2 ^= Ker[2];
-	int t3 = ((unsigned char)*(in++) << 24);
-	t3 |= ((unsigned char)*(in++) << 16);
-	t3 |= ((unsigned char)*(in++) << 8);
-	t3 |= (unsigned char)*(in++);
+	int t3 = ((unsigned char)*( in++ ) << 24 );
+	t3 |= ((unsigned char)*( in++ ) << 16 );
+	t3 |= ((unsigned char)*( in++ ) << 8 );
+	t3 |= (unsigned char)*( in++ );
 	t3 ^= Ker[3];
 
 	int a0, a1, a2, a3;
-	//Apply Round Transforms
-	for (int r = 1; r < ctx->m_iROUNDS; r++)
+	// Apply Round Transforms
+	for( int r = 1; r < ctx->m_iROUNDS; r++ )
 	{
 		Ker = ctx->m_Ke[r];
-		a0 = (sm_T1[(t0 >> 24) & 0xFF] ^
-			sm_T2[(t1 >> 16) & 0xFF] ^
-			sm_T3[(t2 >> 8) & 0xFF] ^
-			sm_T4[t3 & 0xFF]) ^ Ker[0];
-		a1 = (sm_T1[(t1 >> 24) & 0xFF] ^
-			sm_T2[(t2 >> 16) & 0xFF] ^
-			sm_T3[(t3 >> 8) & 0xFF] ^
-			sm_T4[t0 & 0xFF]) ^ Ker[1];
-		a2 = (sm_T1[(t2 >> 24) & 0xFF] ^
-			sm_T2[(t3 >> 16) & 0xFF] ^
-			sm_T3[(t0 >> 8) & 0xFF] ^
-			sm_T4[t1 & 0xFF]) ^ Ker[2];
-		a3 = (sm_T1[(t3 >> 24) & 0xFF] ^
-			sm_T2[(t0 >> 16) & 0xFF] ^
-			sm_T3[(t1 >> 8) & 0xFF] ^
-			sm_T4[t2 & 0xFF]) ^ Ker[3];
+		a0 = ( sm_T1[( t0 >> 24 ) & 0xFF]
+		       ^ sm_T2[( t1 >> 16 ) & 0xFF]
+		       ^ sm_T3[( t2 >> 8 ) & 0xFF]
+		       ^ sm_T4[t3 & 0xFF] ) ^ Ker[0];
+		a1 = ( sm_T1[( t1 >> 24 ) & 0xFF]
+		       ^ sm_T2[( t2 >> 16 ) & 0xFF]
+		       ^ sm_T3[( t3 >> 8 ) & 0xFF]
+		       ^ sm_T4[t0 & 0xFF] ) ^ Ker[1];
+		a2 = ( sm_T1[( t2 >> 24 ) & 0xFF]
+		       ^ sm_T2[( t3 >> 16 ) & 0xFF]
+		       ^ sm_T3[( t0 >> 8 ) & 0xFF]
+		       ^ sm_T4[t1 & 0xFF] ) ^ Ker[2];
+		a3 = ( sm_T1[( t3 >> 24 ) & 0xFF]
+		       ^ sm_T2[( t0 >> 16 ) & 0xFF]
+		       ^ sm_T3[( t1 >> 8 ) & 0xFF]
+		       ^ sm_T4[t2 & 0xFF] ) ^ Ker[3];
 		t0 = a0;
 		t1 = a1;
 		t2 = a2;
 		t3 = a3;
 	}
-	//Last Round is special
+	// Last Round is special
 	Ker = ctx->m_Ke[ctx->m_iROUNDS];
 	int tt = Ker[0];
-	result[0] = sm_S[(t0 >> 24) & 0xFF] ^ (tt >> 24);
-	result[1] = sm_S[(t1 >> 16) & 0xFF] ^ (tt >> 16);
-	result[2] = sm_S[(t2 >> 8) & 0xFF] ^ (tt >> 8);
+	result[0] = sm_S[( t0 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[1] = sm_S[( t1 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[2] = sm_S[( t2 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[3] = sm_S[t3 & 0xFF] ^ tt;
 	tt = Ker[1];
-	result[4] = sm_S[(t1 >> 24) & 0xFF] ^ (tt >> 24);
-	result[5] = sm_S[(t2 >> 16) & 0xFF] ^ (tt >> 16);
-	result[6] = sm_S[(t3 >> 8) & 0xFF] ^ (tt >> 8);
+	result[4] = sm_S[( t1 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[5] = sm_S[( t2 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[6] = sm_S[( t3 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[7] = sm_S[t0 & 0xFF] ^ tt;
 	tt = Ker[2];
-	result[8] = sm_S[(t2 >> 24) & 0xFF] ^ (tt >> 24);
-	result[9] = sm_S[(t3 >> 16) & 0xFF] ^ (tt >> 16);
-	result[10] = sm_S[(t0 >> 8) & 0xFF] ^ (tt >> 8);
+	result[8] = sm_S[( t2 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[9] = sm_S[( t3 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[10] = sm_S[( t0 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[11] = sm_S[t1 & 0xFF] ^ tt;
 	tt = Ker[3];
-	result[12] = sm_S[(t3 >> 24) & 0xFF] ^ (tt >> 24);
-	result[13] = sm_S[(t0 >> 16) & 0xFF] ^ (tt >> 16);
-	result[14] = sm_S[(t1 >> 8) & 0xFF] ^ (tt >> 8);
+	result[12] = sm_S[( t3 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[13] = sm_S[( t0 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[14] = sm_S[( t1 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[15] = sm_S[t2 & 0xFF] ^ tt;
 }
 
-//Convenience method to decrypt exactly one block of plaintext, assuming
-//Rijndael's default block size (128-bit).
+// Convenience method to decrypt exactly one block of plaintext, assuming
+// Rijndael's default block size (128-bit).
 // in         - The ciphertext.
 // result     - The plaintext generated from a ciphertext using the session key.
-void DefDecryptBlock(CRijndael *ctx, char const* in, char* result)
+void DefDecryptBlock( CRijndael *ctx, char const *in, char *result )
 {
-	int* Kdr = ctx->m_Kd[0];
-	int t0 = ((unsigned char)*(in++) << 24);
-	t0 = t0 | ((unsigned char)*(in++) << 16);
-	t0 |= ((unsigned char)*(in++) << 8);
-	t0 |= (unsigned char)*(in++);
+	int *Kdr = ctx->m_Kd[0];
+	int t0 = ((unsigned char)*( in++ ) << 24 );
+	t0 = t0 | ((unsigned char)*( in++ ) << 16 );
+	t0 |= ((unsigned char)*( in++ ) << 8 );
+	t0 |= (unsigned char)*( in++ );
 	t0 ^= Kdr[0];
-	int t1 = ((unsigned char)*(in++) << 24);
-	t1 |= ((unsigned char)*(in++) << 16);
-	t1 |= ((unsigned char)*(in++) << 8);
-	t1 |= (unsigned char)*(in++);
+	int t1 = ((unsigned char)*( in++ ) << 24 );
+	t1 |= ((unsigned char)*( in++ ) << 16 );
+	t1 |= ((unsigned char)*( in++ ) << 8 );
+	t1 |= (unsigned char)*( in++ );
 	t1 ^= Kdr[1];
-	int t2 = ((unsigned char)*(in++) << 24);
-	t2 |= ((unsigned char)*(in++) << 16);
-	t2 |= ((unsigned char)*(in++) << 8);
-	t2 |= (unsigned char)*(in++);
+	int t2 = ((unsigned char)*( in++ ) << 24 );
+	t2 |= ((unsigned char)*( in++ ) << 16 );
+	t2 |= ((unsigned char)*( in++ ) << 8 );
+	t2 |= (unsigned char)*( in++ );
 	t2 ^= Kdr[2];
-	int t3 = ((unsigned char)*(in++) << 24);
-	t3 |= ((unsigned char)*(in++) << 16);
-	t3 |= ((unsigned char)*(in++) << 8);
-	t3 |= (unsigned char)*(in++);
+	int t3 = ((unsigned char)*( in++ ) << 24 );
+	t3 |= ((unsigned char)*( in++ ) << 16 );
+	t3 |= ((unsigned char)*( in++ ) << 8 );
+	t3 |= (unsigned char)*( in++ );
 	t3 ^= Kdr[3];
 	int a0, a1, a2, a3;
-	for (int r = 1; r < ctx->m_iROUNDS; r++) // apply round transforms
+	for( int r = 1; r < ctx->m_iROUNDS; r++ ) // apply round transforms
 	{
 		Kdr = ctx->m_Kd[r];
-		a0 = (sm_T5[(t0 >> 24) & 0xFF] ^
-			sm_T6[(t3 >> 16) & 0xFF] ^
-			sm_T7[(t2 >> 8) & 0xFF] ^
-			sm_T8[t1 & 0xFF]) ^ Kdr[0];
-		a1 = (sm_T5[(t1 >> 24) & 0xFF] ^
-			sm_T6[(t0 >> 16) & 0xFF] ^
-			sm_T7[(t3 >> 8) & 0xFF] ^
-			sm_T8[t2 & 0xFF]) ^ Kdr[1];
-		a2 = (sm_T5[(t2 >> 24) & 0xFF] ^
-			sm_T6[(t1 >> 16) & 0xFF] ^
-			sm_T7[(t0 >> 8) & 0xFF] ^
-			sm_T8[t3 & 0xFF]) ^ Kdr[2];
-		a3 = (sm_T5[(t3 >> 24) & 0xFF] ^
-			sm_T6[(t2 >> 16) & 0xFF] ^
-			sm_T7[(t1 >> 8) & 0xFF] ^
-			sm_T8[t0 & 0xFF]) ^ Kdr[3];
+		a0 = ( sm_T5[( t0 >> 24 ) & 0xFF]
+		       ^ sm_T6[( t3 >> 16 ) & 0xFF]
+		       ^ sm_T7[( t2 >> 8 ) & 0xFF]
+		       ^ sm_T8[t1 & 0xFF] ) ^ Kdr[0];
+		a1 = ( sm_T5[( t1 >> 24 ) & 0xFF]
+		       ^ sm_T6[( t0 >> 16 ) & 0xFF]
+		       ^ sm_T7[( t3 >> 8 ) & 0xFF]
+		       ^ sm_T8[t2 & 0xFF] ) ^ Kdr[1];
+		a2 = ( sm_T5[( t2 >> 24 ) & 0xFF]
+		       ^ sm_T6[( t1 >> 16 ) & 0xFF]
+		       ^ sm_T7[( t0 >> 8 ) & 0xFF]
+		       ^ sm_T8[t3 & 0xFF] ) ^ Kdr[2];
+		a3 = ( sm_T5[( t3 >> 24 ) & 0xFF]
+		       ^ sm_T6[( t2 >> 16 ) & 0xFF]
+		       ^ sm_T7[( t1 >> 8 ) & 0xFF]
+		       ^ sm_T8[t0 & 0xFF] ) ^ Kdr[3];
 		t0 = a0;
 		t1 = a1;
 		t2 = a2;
 		t3 = a3;
 	}
-	//Last Round is special
+	// Last Round is special
 	Kdr = ctx->m_Kd[ctx->m_iROUNDS];
 	int tt = Kdr[0];
-	result[0] = sm_Si[(t0 >> 24) & 0xFF] ^ (tt >> 24);
-	result[1] = sm_Si[(t3 >> 16) & 0xFF] ^ (tt >> 16);
-	result[2] = sm_Si[(t2 >> 8) & 0xFF] ^ (tt >> 8);
+	result[0] = sm_Si[( t0 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[1] = sm_Si[( t3 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[2] = sm_Si[( t2 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[3] = sm_Si[t1 & 0xFF] ^ tt;
 	tt = Kdr[1];
-	result[4] = sm_Si[(t1 >> 24) & 0xFF] ^ (tt >> 24);
-	result[5] = sm_Si[(t0 >> 16) & 0xFF] ^ (tt >> 16);
-	result[6] = sm_Si[(t3 >> 8) & 0xFF] ^ (tt >> 8);
+	result[4] = sm_Si[( t1 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[5] = sm_Si[( t0 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[6] = sm_Si[( t3 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[7] = sm_Si[t2 & 0xFF] ^ tt;
 	tt = Kdr[2];
-	result[8] = sm_Si[(t2 >> 24) & 0xFF] ^ (tt >> 24);
-	result[9] = sm_Si[(t1 >> 16) & 0xFF] ^ (tt >> 16);
-	result[10] = sm_Si[(t0 >> 8) & 0xFF] ^ (tt >> 8);
+	result[8] = sm_Si[( t2 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[9] = sm_Si[( t1 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[10] = sm_Si[( t0 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[11] = sm_Si[t3 & 0xFF] ^ tt;
 	tt = Kdr[3];
-	result[12] = sm_Si[(t3 >> 24) & 0xFF] ^ (tt >> 24);
-	result[13] = sm_Si[(t2 >> 16) & 0xFF] ^ (tt >> 16);
-	result[14] = sm_Si[(t1 >> 8) & 0xFF] ^ (tt >> 8);
+	result[12] = sm_Si[( t3 >> 24 ) & 0xFF] ^ ( tt >> 24 );
+	result[13] = sm_Si[( t2 >> 16 ) & 0xFF] ^ ( tt >> 16 );
+	result[14] = sm_Si[( t1 >> 8 ) & 0xFF] ^ ( tt >> 8 );
 	result[15] = sm_Si[t0 & 0xFF] ^ tt;
 }
 
-//Encrypt exactly one block of plaintext.
+// Encrypt exactly one block of plaintext.
 // in           - The plaintext.
 // result       - The ciphertext generated from a plaintext using the key.
-void CRijndael_EncryptBlock(CRijndael *ctx, char const* in, char* result)
+void CRijndael_EncryptBlock( CRijndael *ctx, char const *in, char *result )
 {
-	if (DEFAULT_BLOCK_SIZE == ctx->m_blockSize)
+	if( DEFAULT_BLOCK_SIZE == ctx->m_blockSize )
 	{
-		DefEncryptBlock(ctx, in, result);
+		DefEncryptBlock( ctx, in, result );
 		return;
 	}
 	int BC = ctx->m_blockSize / 4;
-	int SC = (BC == 4) ? 0 : (BC == 6 ? 1 : 2);
+	int SC = ( BC == 4 ) ? 0 : ( BC == 6 ? 1 : 2 );
 	int s1 = sm_shifts[SC][1][0];
 	int s2 = sm_shifts[SC][2][0];
 	int s3 = sm_shifts[SC][3][0];
-	//Temporary Work Arrays
+	// Temporary Work Arrays
 	int i;
 	int tt;
-	int* pi = ctx->t;
-	for (i = 0; i<BC; i++)
+	int *pi = ctx->t;
+	for( i = 0; i < BC; i++ )
 	{
-		*pi = ((unsigned char)*(in++) << 24);
-		*pi |= ((unsigned char)*(in++) << 16);
-		*pi |= ((unsigned char)*(in++) << 8);
-		*pi |= (unsigned char)*(in++);
-		*(pi++) ^= ctx->m_Ke[0][i];
+		*pi = ((unsigned char)*( in++ ) << 24 );
+		*pi |= ((unsigned char)*( in++ ) << 16 );
+		*pi |= ((unsigned char)*( in++ ) << 8 );
+		*pi |= (unsigned char)*( in++ );
+		*( pi++ ) ^= ctx->m_Ke[0][i];
 	}
-	//Apply Round Transforms
-	for (int r = 1; r<ctx->m_iROUNDS; r++)
+	// Apply Round Transforms
+	for( int r = 1; r < ctx->m_iROUNDS; r++ )
 	{
-		for (i = 0; i<BC; i++)
-			ctx->a[i] = (sm_T1[(ctx->t[i] >> 24) & 0xFF] ^
-				sm_T2[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^
-				sm_T3[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^
-				sm_T4[ctx->t[(i + s3) % BC] & 0xFF]) ^ ctx->m_Ke[r][i];
-		memcpy(ctx->t, ctx->a, 4 * BC);
+		for( i = 0; i < BC; i++ )
+			ctx->a[i] = ( sm_T1[( ctx->t[i] >> 24 ) & 0xFF]
+				      ^ sm_T2[( ctx->t[( i + s1 ) % BC] >> 16 ) & 0xFF]
+				      ^ sm_T3[( ctx->t[( i + s2 ) % BC] >> 8 ) & 0xFF]
+				      ^ sm_T4[ctx->t[( i + s3 ) % BC] & 0xFF] ) ^ ctx->m_Ke[r][i];
+		memcpy( ctx->t, ctx->a, 4 * BC );
 	}
 	int j;
-	//Last Round is Special
-	for (i = 0, j = 0; i<BC; i++)
+	// Last Round is Special
+	for( i = 0, j = 0; i < BC; i++ )
 	{
 		tt = ctx->m_Ke[ctx->m_iROUNDS][i];
-		result[j++] = sm_S[(ctx->t[i] >> 24) & 0xFF] ^ (tt >> 24);
-		result[j++] = sm_S[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
-		result[j++] = sm_S[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
-		result[j++] = sm_S[ctx->t[(i + s3) % BC] & 0xFF] ^ tt;
+		result[j++] = sm_S[( ctx->t[i] >> 24 ) & 0xFF] ^ ( tt >> 24 );
+		result[j++] = sm_S[( ctx->t[( i + s1 ) % BC] >> 16 ) & 0xFF] ^ ( tt >> 16 );
+		result[j++] = sm_S[( ctx->t[( i + s2 ) % BC] >> 8 ) & 0xFF] ^ ( tt >> 8 );
+		result[j++] = sm_S[ctx->t[( i + s3 ) % BC] & 0xFF] ^ tt;
 	}
 }
 
-//Decrypt exactly one block of ciphertext.
+// Decrypt exactly one block of ciphertext.
 // in         - The ciphertext.
 // result     - The plaintext generated from a ciphertext using the session key.
-void CRijndael_DecryptBlock(CRijndael *ctx, char const* in, char* result)
+void CRijndael_DecryptBlock( CRijndael *ctx, char const *in, char *result )
 {
-	if (DEFAULT_BLOCK_SIZE == ctx->m_blockSize)
+	if( DEFAULT_BLOCK_SIZE == ctx->m_blockSize )
 	{
-		DefDecryptBlock(ctx, in, result);
+		DefDecryptBlock( ctx, in, result );
 		return;
 	}
 	int BC = ctx->m_blockSize / 4;
-	int SC = BC == 4 ? 0 : (BC == 6 ? 1 : 2);
+	int SC = BC == 4 ? 0 : ( BC == 6 ? 1 : 2 );
 	int s1 = sm_shifts[SC][1][1];
 	int s2 = sm_shifts[SC][2][1];
 	int s3 = sm_shifts[SC][3][1];
-	//Temporary Work Arrays
+	// Temporary Work Arrays
 	int i;
 	int tt;
-	int* pi = ctx->t;
-	for (i = 0; i<BC; i++)
+	int *pi = ctx->t;
+	for( i = 0; i < BC; i++ )
 	{
-		*pi = ((unsigned char)*(in++) << 24);
-		*pi |= ((unsigned char)*(in++) << 16);
-		*pi |= ((unsigned char)*(in++) << 8);
-		*pi |= (unsigned char)*(in++);
-		*(pi++) ^= ctx->m_Kd[0][i];
+		*pi = ((unsigned char)*( in++ ) << 24 );
+		*pi |= ((unsigned char)*( in++ ) << 16 );
+		*pi |= ((unsigned char)*( in++ ) << 8 );
+		*pi |= (unsigned char)*( in++ );
+		*( pi++ ) ^= ctx->m_Kd[0][i];
 	}
-	//Apply Round Transforms
-	for (int r = 1; r<ctx->m_iROUNDS; r++)
+	// Apply Round Transforms
+	for( int r = 1; r < ctx->m_iROUNDS; r++ )
 	{
-		for (i = 0; i<BC; i++)
-			ctx->a[i] = (sm_T5[(ctx->t[i] >> 24) & 0xFF] ^
-				sm_T6[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^
-				sm_T7[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^
-				sm_T8[ctx->t[(i + s3) % BC] & 0xFF]) ^ ctx->m_Kd[r][i];
-		memcpy(ctx->t, ctx->a, 4 * BC);
+		for( i = 0; i < BC; i++ )
+			ctx->a[i] = ( sm_T5[( ctx->t[i] >> 24 ) & 0xFF]
+				      ^ sm_T6[( ctx->t[( i + s1 ) % BC] >> 16 ) & 0xFF]
+				      ^ sm_T7[( ctx->t[( i + s2 ) % BC] >> 8 ) & 0xFF]
+				      ^ sm_T8[ctx->t[( i + s3 ) % BC] & 0xFF] ) ^ ctx->m_Kd[r][i];
+		memcpy( ctx->t, ctx->a, 4 * BC );
 	}
 	int j;
-	//Last Round is Special
-	for (i = 0, j = 0; i<BC; i++)
+	// Last Round is Special
+	for( i = 0, j = 0; i < BC; i++ )
 	{
 		tt = ctx->m_Kd[ctx->m_iROUNDS][i];
-		result[j++] = sm_Si[(ctx->t[i] >> 24) & 0xFF] ^ (tt >> 24);
-		result[j++] = sm_Si[(ctx->t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16);
-		result[j++] = sm_Si[(ctx->t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8);
-		result[j++] = sm_Si[ctx->t[(i + s3) % BC] & 0xFF] ^ tt;
+		result[j++] = sm_Si[( ctx->t[i] >> 24 ) & 0xFF] ^ ( tt >> 24 );
+		result[j++] = sm_Si[( ctx->t[( i + s1 ) % BC] >> 16 ) & 0xFF] ^ ( tt >> 16 );
+		result[j++] = sm_Si[( ctx->t[( i + s2 ) % BC] >> 8 ) & 0xFF] ^ ( tt >> 8 );
+		result[j++] = sm_Si[ctx->t[( i + s3 ) % BC] & 0xFF] ^ tt;
 	}
 }

@@ -1,18 +1,18 @@
 #include <string.h>
 #include "SHA.h"
 
-//SHA256 TEST VALUES:
-//1)One-Block Message "abc"
-//"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+// SHA256 TEST VALUES:
+// 1)One-Block Message "abc"
+// "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 //
-//2)"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-//"248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
+// 2)"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
+// "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
 //
-//3)Multi-Block Message "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"
-//"CF5B16A778AF8380036CE59E7B0492370B249B11E8F07A51AFAC45037AFEE9D1"
+// 3)Multi-Block Message "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"
+// "CF5B16A778AF8380036CE59E7B0492370B249B11E8F07A51AFAC45037AFEE9D1"
 //
-//4)Long Message "a" 1,000,000 times
-//"cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
+// 4)Long Message "a" 1,000,000 times
+// "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"
 
 
 int main( int argc, char **argv )

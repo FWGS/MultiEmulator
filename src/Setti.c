@@ -1,6 +1,6 @@
 #include "multi_emulator.h"
 
-int GenerateSetti(void *pDest)
+int GenerateSetti( void *pDest )
 {
 	int *pTicket = (int *)pDest;
 
